@@ -2136,4 +2136,14 @@ test_expect_success 'If tag is created then tag message file is unlinked' '
 	! test_path_exists .git/TAG_EDITMSG
 '
 
+test_expect_success 'If tag cannot be created then tag message file is not unlinked' '
+	test_when_finished "git tag -d foo/bar" &&
+	write_script fakeeditor <<-\EOF &&
+	echo Message >.git/TAG_EDITMSG
+	EOF
+	git tag foo/bar &&
+	test_must_fail env GIT_EDITOR=./fakeeditor git tag -a foo &&
+	test_path_exists .git/TAG_EDITMSG
+'
+
 test_done
