@@ -694,10 +694,14 @@ The most notable example is `HEAD`.
 	plus any local changes that you have made but not yet committed.
 
 [[def_worktree]]worktree::
-	A repository can have zero (i.e. bare repository) or one or
+	A repository can have zero or one or
 	more worktrees attached to it. One "worktree" consists of a
 	"working tree" and repository metadata, most of which are
 	shared among other worktrees of a single repository, and
 	some of which are maintained separately per worktree
 	(e.g. the index, HEAD and pseudorefs like MERGE_HEAD,
 	per-worktree refs and per-worktree configuration file).
++
+Note that the directory tree of a <<def_bare_repository,bare_repository>>
+may have linked worktrees, but cannot itself be a worktree since it has no
+working tree.
