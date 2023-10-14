@@ -588,6 +588,7 @@ test_expect_success 'start --scheduler=<scheduler>' '
 '
 
 test_expect_success 'start from empty cron table' '
+	test_when_finished git maintenance unregister &&
 	GIT_TEST_MAINT_SCHEDULER="crontab:test-tool crontab cron.txt" git maintenance start --scheduler=crontab &&
 
 	# start registers the repo
@@ -599,6 +600,8 @@ test_expect_success 'start from empty cron table' '
 '
 
 test_expect_success 'stop from existing schedule' '
+	test_when_finished git maintenance unregister &&
+	git maintenance register &&
 	GIT_TEST_MAINT_SCHEDULER="crontab:test-tool crontab cron.txt" git maintenance stop &&
 
 	# stop does not unregister the repo
