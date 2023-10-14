@@ -709,6 +709,9 @@ test_expect_success 'start and stop macOS maintenance' '
 '
 
 test_expect_success 'use launchctl list to prevent extra work' '
+	write_script print-args <<-\EOF &&
+	echo $* | sed "s:gui/[0-9][0-9]*:gui/[UID]:" >>args
+	EOF
 	# ensure we are registered
 	GIT_TEST_MAINT_SCHEDULER=launchctl:./print-args git maintenance start --scheduler=launchctl &&
 
