@@ -388,6 +388,7 @@ test_expect_success 'maintenance.incremental-repack.auto (when config is unset)'
 '
 
 test_expect_success 'pack-refs task' '
+	test_commit message &&
 	for n in $(test_seq 1 5)
 	do
 		git branch -f to-pack/$n HEAD || return 1
