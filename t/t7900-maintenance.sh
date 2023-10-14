@@ -257,13 +257,15 @@ test_expect_success 'maintenance.loose-objects.auto' '
 	test_subcommand git prune-packed --quiet <trace-loC
 '
 
-test_expect_success 'incremental-repack task' '
+test_expect_success 'setup packfile' '
 	packDir=.git/objects/pack &&
 	for i in $(test_seq 1 5)
 	do
 		test_commit $i || return 1
-	done &&
+	done
+'
 
+test_expect_success 'incremental-repack task' '
 	# Create three disjoint pack-files with size BIG, small, small.
 	echo HEAD~2 | git pack-objects --revs $packDir/test-1 &&
 	test_tick &&
