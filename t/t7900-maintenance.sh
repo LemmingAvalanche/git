@@ -145,6 +145,12 @@ test_expect_success 'run --task=prefetch with no remotes' '
 '
 
 test_expect_success 'prefetch multiple remotes' '
+	test_when_finished rm -r clone1 &&
+	test_when_finished rm -r clone2 &&
+	test_when_finished git remote remove remote1 &&
+	test_when_finished git remote remove remote2 &&
+	test_when_finished git tag --delete one &&
+	test_when_finished git tag --delete two &&
 	git clone . clone1 &&
 	git clone . clone2 &&
 	git remote add remote1 "file://$(pwd)/clone1" &&
@@ -175,6 +181,22 @@ test_expect_success 'prefetch multiple remotes' '
 '
 
 test_expect_success 'loose-objects task' '
+	test_when_finished rm -r clone1 &&
+	test_when_finished rm -r clone2 &&
+	test_when_finished git remote remove remote1 &&
+	test_when_finished git remote remove remote2 &&
+	test_when_finished git tag --delete one &&
+	test_when_finished git tag --delete two &&
+	git clone . clone1 &&
+	git clone . clone2 &&
+	git remote add remote1 "file://$(pwd)/clone1" &&
+	git remote add remote2 "file://$(pwd)/clone2" &&
+	git -C clone1 switch -c one &&
+	git -C clone2 switch -c two &&
+	test_commit -C clone1 one &&
+	test_commit -C clone2 two &&
+	git fetch --all &&
+
 	# Repack everything so we know the state of the object dir
 	git repack -adk &&
 
