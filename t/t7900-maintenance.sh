@@ -794,6 +794,7 @@ test_expect_success 'start and stop Linux/systemd maintenance' '
 '
 
 test_expect_success 'start and stop when several schedulers are available' '
+	pfx=$(cd "$HOME" && pwd) &&
 	write_script print-args <<-\EOF &&
 	printf "%s\n" "$*" | sed "s:gui/[0-9][0-9]*:gui/[UID]:; s:\(schtasks /create .* /xml\).*:\1:;" >>args
 	EOF
