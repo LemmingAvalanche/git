@@ -408,14 +408,16 @@ test_expect_success 'invalid --schedule value' '
 	test_i18ngrep "unrecognized --schedule" err
 '
 
-test_expect_success '--schedule inheritance weekly -> daily -> hourly' '
+test_expect_success 'setup for inheritance' '
 	git config maintenance.loose-objects.enabled true &&
 	git config maintenance.loose-objects.schedule hourly &&
 	git config maintenance.commit-graph.enabled true &&
 	git config maintenance.commit-graph.schedule daily &&
 	git config maintenance.incremental-repack.enabled true &&
-	git config maintenance.incremental-repack.schedule weekly &&
+	git config maintenance.incremental-repack.schedule weekly
+'
 
+test_expect_success '--schedule inheritance weekly -> daily -> hourly' '
 	GIT_TRACE2_EVENT="$(pwd)/hourly.txt" \
 		git maintenance run --schedule=hourly 2>/dev/null &&
 	test_subcommand git prune-packed --quiet <hourly.txt &&
