@@ -382,6 +382,10 @@ int config_error_nonbool(const char *);
 #endif
 
 char *git_system_config(void);
+/**
+ * Returns `NULL` if is uncertain whether or not `HOME/.gitconfig` exists.
+ */
+char *git_global_config(void);
 void git_global_config_paths(char **user, char **xdg);
 
 int git_config_parse_parameter(const char *, config_fn_t fn, void *data);
