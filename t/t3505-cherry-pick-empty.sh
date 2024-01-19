@@ -89,7 +89,7 @@ test_expect_success 'cherry-pick a commit that becomes no-op (prep)' '
 	git commit -m "add file2 on the side"
 '
 
-test_expect_success 'cherry-pick a no-op without --keep-redundant' '
+test_expect_success 'cherry-pick a no-op with neither --keep-redundant nor --empty' '
 	git reset --hard &&
 	git checkout fork^0 &&
 	test_must_fail git cherry-pick main
@@ -99,6 +99,30 @@ test_expect_success 'cherry-pick a no-op with --keep-redundant' '
 	git reset --hard &&
 	git checkout fork^0 &&
 	git cherry-pick --keep-redundant-commits main &&
+	git show -s --format=%s >actual &&
+	echo "add file2 on main" >expect &&
+	test_cmp expect actual
+'
+
+test_expect_success 'cherry-pick a no-op with --empty=ask' '
+	git reset --hard &&
+	git checkout fork^0 &&
+	test_must_fail git cherry-pick --empty=ask main
+'
+
+test_expect_success 'cherry-pick a no-op with --empty=drop' '
+	git reset --hard &&
+	git checkout fork^0 &&
+	git cherry-pick --empty=drop main &&
+	git show -s --format=%s >actual &&
+	echo "add file2 on the side" >expect &&
+	test_cmp expect actual
+'
+
+test_expect_success 'cherry-pick a no-op with --empty=keep' '
+	git reset --hard &&
+	git checkout fork^0 &&
+	git cherry-pick --empty=keep main &&
 	git show -s --format=%s >actual &&
 	echo "add file2 on main" >expect &&
 	test_cmp expect actual
