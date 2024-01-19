@@ -289,7 +289,7 @@ See also INCOMPATIBLE OPTIONS below.
 +
 See also INCOMPATIBLE OPTIONS below.
 
---empty=(drop|keep|ask)::
+--empty=(drop|keep|stop)::
 	How to handle commits that are not empty to start and are not
 	clean cherry-picks of any upstream commit, but which become
 	empty after rebasing (because they contain a subset of already
@@ -300,12 +300,14 @@ See also INCOMPATIBLE OPTIONS below.
 	The empty commit will be dropped. This is the default behavior.
 `keep`;;
 	The empty commit will be kept.
-`ask`;;
+`stop`;;
 	The rebase will halt when the empty commit is applied, allowing you to
 	choose whether to drop it, edit files more, or just commit the empty
 	changes. This option is implied when `--interactive` is specified.
 	Other options, like `--exec`, will use the default of drop unless
 	`-i`/`--interactive` is explicitly specified.
+`ask`;;
+	A deprecated synonym of `stop`.
 --
 +
 Note that commits which start empty are kept (unless `--no-keep-empty`
@@ -711,7 +713,7 @@ be dropped automatically with `--no-keep-empty`).
 Similar to the apply backend, by default the merge backend drops
 commits that become empty unless `-i`/`--interactive` is specified (in
 which case it stops and asks the user what to do).  The merge backend
-also has an `--empty=(drop|keep|ask)` option for changing the behavior
+also has an `--empty=(drop|keep|stop)` option for changing the behavior
 of handling commits that become empty.
 
 Directory rename detection
