@@ -131,8 +131,8 @@ effect to your index in a row.
 	even without this option.  Note also, that use of this option only
 	keeps commits that were initially empty (i.e. the commit recorded the
 	same tree as its parent).  Commits which are made empty due to a
-	previous commit are dropped.  To force the inclusion of those commits
-	use `--keep-redundant-commits`.
+	previous commit will cause the cherry-pick to fail.  To force the
+	inclusion of those commits use `--keep-redundant-commits`.
 
 --allow-empty-message::
 	By default, cherry-picking a commit with an empty message will fail.
@@ -144,7 +144,11 @@ effect to your index in a row.
 	current history, it will become empty.  By default these
 	redundant commits cause `cherry-pick` to stop so the user can
 	examine the commit. This option overrides that behavior and
-	creates an empty commit object.  Implies `--allow-empty`.
+	creates an empty commit object. Note that use of this option only
+	results in an empty commit when the commit was not initially empty,
+	but rather became empty due to a previous commit. Commits that were
+	initially empty will cause the cherry-pick to fail. To force the
+	inclusion of those commits use `--allow-empty`.
 
 --strategy=<strategy>::
 	Use the given merge strategy.  Should only be used once.

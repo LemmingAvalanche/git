@@ -59,6 +59,11 @@ test_expect_success 'cherry pick an empty non-ff commit without --allow-empty' '
 	test_must_fail git cherry-pick empty-change-branch
 '
 
+test_expect_success 'cherry pick an empty non-ff commit with --keep-redundant-commits' '
+	git checkout main &&
+	test_must_fail git cherry-pick --keep-redundant-commits empty-change-branch
+'
+
 test_expect_success 'cherry pick an empty non-ff commit with --allow-empty' '
 	git checkout main &&
 	git cherry-pick --allow-empty empty-change-branch

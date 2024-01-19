@@ -1731,22 +1731,24 @@ static int allow_empty(struct repository *r,
 	 *
 	 * (4) we allow both.
 	 */
-	if (!opts->allow_empty)
-		return 0; /* let "git commit" barf as necessary */
-
 	index_unchanged = is_index_unchanged(r);
-	if (index_unchanged < 0)
+	if (index_unchanged < 0) {
+		if (!opts->allow_empty)
+			return 0;
 		return index_unchanged;
+	}
 	if (!index_unchanged)
 		return 0; /* we do not have to say --allow-empty */
 
-	if (opts->keep_redundant_commits)
-		return 1;
-
 	originally_empty = is_original_commit_empty(commit);
-	if (originally_empty < 0)
+	if (originally_empty < 0) {
+		if (!opts->allow_empty)
+			return 0;
 		return originally_empty;
+	}
 	if (originally_empty)
+		return opts->allow_empty;
+	else if (opts->keep_redundant_commits)
 		return 1;
 	else if (opts->drop_redundant_commits)
 		return 2;
