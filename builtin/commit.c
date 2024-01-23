@@ -1045,6 +1045,9 @@ static int prepare_to_commit(const char *index_file, const char *prefix,
 		strvec_clear(&trailer_args);
 	}
 
+	if (amend && !repo_index_has_changes(the_repository, NULL, NULL))
+		allow_empty = 1;
+
 	/*
 	 * Reject an attempt to record a non-merge empty commit without
 	 * explicit --allow-empty. In the cherry-pick case, it may be
