@@ -4,9 +4,9 @@
 # Test command for --header-cmd
 #!/bin/sh
 
-printf "version: $GIT_FP_HEADER_CMD_VERSION\n"
-printf "sha1: $GIT_FP_HEADER_CMD_SHA1\n"
-printf "count: $GIT_FP_HEADER_CMD_COUNT\n"
+printf "X-Version: $GIT_FP_HEADER_CMD_VERSION\n"
+printf "X-Sha1: $GIT_FP_HEADER_CMD_SHA1\n"
+printf "X-Count: $GIT_FP_HEADER_CMD_COUNT\n"
 
 # END Test command
 
