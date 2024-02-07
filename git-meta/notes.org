@@ -18,3 +18,8 @@ of the last commit (currently) before dying:
 #+end_src
 
 So does it die when cleaning up?
+
+* Testing on my own email (21:39)
+[2024-02-07 on.]
+
+Sent it to my own email and the command-headers survive transit.
