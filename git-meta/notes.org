@@ -1,0 +1,20 @@
+* Troubleshooting segv still
+[2024-02-07 on.]
+
+This also fails:
+
+#+begin_src
+./git-format-patch --no-cover-letter --header-cmd=./test-cmd 'HEAD^{/★meta: base}'..@
+#+end_src
+
+=--no-cover-letter=
+
+I was wondering if the cover letter was the culprit…? Anyway. It looks
+like I get to process all my patches. Because it prints the patch name
+of the last commit (currently) before dying:
+
+#+begin_src
+0038-NOTE-Smooth.patch
+#+end_src
+
+So does it die when cleaning up?

@@ -13,3 +13,6 @@ printf "sha1: $GIT_FP_HEADER_CMD_SHA1\n"
 printf "count: $GIT_FP_HEADER_CMD_COUNT\n"
 
 # END Test command
+
+# Diff command :)
+git diff 'HEAD^{/★meta: base}' -- ':(exclude)git-meta/**'
