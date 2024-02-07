@@ -5,7 +5,7 @@
 #!/bin/sh
 
 printf "X-Version: $GIT_FP_HEADER_CMD_VERSION\n"
-printf "X-Sha1: $GIT_FP_HEADER_CMD_SHA1\n"
+printf "X-ShaOne: $GIT_FP_HEADER_CMD_SHA1\n"
 printf "X-Count: $GIT_FP_HEADER_CMD_COUNT\n"
 
 # END Test command
