@@ -53,3 +53,14 @@ Content-Transfer-Encoding: 8bit
 Because I can’t reproduce it on master.
 
 ** TODO Fix =--add-header= for cover letter regression
+
+...
+
+I’m pretty sure it’s my move of
+
+#+begin_src
+rev.extra_headers = to_free = strbuf_detach(&buf, NULL);
+#+end_src
+
+But for fucks sake! The code is so fucking obtuse. Now I have to
+restructure everything? God /fucking/ damnit.
