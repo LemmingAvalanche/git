@@ -47,3 +47,9 @@ Content-Transfer-Encoding: 8bit
 *** BLURB HERE ***
 […]
 #+end_src
+
+** Update: gulp, this must be a bug on my branch
+
+Because I can’t reproduce it on master.
+
+** TODO Fix =--add-header= for cover letter regression
