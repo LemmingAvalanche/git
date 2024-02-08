@@ -23,3 +23,27 @@ So does it die when cleaning up?
 [2024-02-07 on.]
 
 Sent it to my own email and the command-headers survive transit.
+
+* Uuuh... extra headers are not generated for the cover letter?
+
+Try for yourself:
+
+#+begin_src
+./git-format-patch --output-directory=patches --add-header='X-Complete-Garbage: ææææææææææææææ' --header-cmd=./test-cmd 'HEAD^{/★meta: base}'..@
+#+end_src
+
+This is the cover letter:
+
+#+begin_src
+From 9a8350fbc2e2ccbe63521a0faebab26bd8779738 Mon Sep 17 00:00:00 2001
+Message-ID: <cover.1707418202.git.code@khaugsbakk.name>
+From: Kristoffer Haugsbakk <code@khaugsbakk.name>
+Date: Thu, 8 Feb 2024 19:50:02 +0100
+Subject: [PATCH 00/40] *** SUBJECT HERE ***
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+*** BLURB HERE ***
+[…]
+#+end_src
