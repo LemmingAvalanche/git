@@ -64,3 +64,13 @@ rev.extra_headers = to_free = strbuf_detach(&buf, NULL);
 
 But for fucks sake! The code is so fucking obtuse. Now I have to
 restructure everything? God /fucking/ damnit.
+
+** But there might be another way…
+
+I have a /string buffer/. Right? I could, for each patch
+
+- Push the extra headers on the buffer
+- Pop after
+
+The problem though is that the stupid =rev.extra_headers= is just a dumb
+fucking char pointer. Ugh.
