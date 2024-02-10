@@ -1,0 +1,6 @@
+v2:
+• Incorporate Junio’s changes (guard against negative padding in
+  `column.c`)
+• Tweak commit message based on Junio’s analysis
+• Use gettext for error message
+• Make a test
