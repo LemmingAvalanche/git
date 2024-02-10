@@ -3,4 +3,7 @@ v2:
   `column.c`)
 • Tweak commit message based on Junio’s analysis
 • Use gettext for error message
+  • However I noticed that the “translation string” from `fast-import`
+    isn’t a translation string. So let’s invent a new one and use a
+    parameter so that it can be used elsewhere.
 • Make a test
