@@ -5,5 +5,6 @@ v2:
 • Use gettext for error message
   • However I noticed that the “translation string” from `fast-import`
     isn’t a translation string. So let’s invent a new one and use a
-    parameter so that it can be used elsewhere.
+    parameter so that it can be used elsewhere. (I found no generic
+    error messages for “non-negative number passed to parameter”)
 • Make a test
