@@ -1,0 +1,9 @@
+#+begin_src shell
+git my-format-patch -v2 \
+     --in-reply-to=76688ed2cc20031d70823d9f5d214f42b3bd1409.1707501064.git.code@khaugsbakk.name \
+     --to=git@vger.kernel.org --no-cover-letter \
+     --cc='Tiago Pascoal" <tiago@pascoal.net>' \
+     --cc='Chris Torek <chris.torek@gmail.com>' \
+     --cc='Junio C Hamano <gitster@pobox.com>' \
+     HEAD^'{/column: disallow negative padding}'^1..HEAD^'{/column: disallow negative padding}'
+#+end_src
