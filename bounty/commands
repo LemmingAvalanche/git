@@ -1,5 +1,9 @@
-# ... run it through git executable (what an idea!)
-./git-format-patch --output-directory=patches --no-cover-letter --header-cmd=./test-cmd 'HEAD^{/★meta: base}'..@
+# ... run it through git-format-patch executable (what an idea!)
+./git-format-patch \
+    --output-directory=patches \
+    --header-cmd=./test-cmd \
+    --add-header='X-Not-Command-Header: not that' \
+    'HEAD^{/★meta}'..@
 
 # Test command for --header-cmd
 #!/bin/sh
