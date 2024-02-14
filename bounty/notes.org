@@ -107,3 +107,27 @@ Error: Process completed with exit code 2.
 #+end_src
 
 It’s nice that it catches it and points me to where.
+
+** I can use Valgrind to check this
+
+#+begin_src
+valgrind --leak-check=full ./git-format-patch     --no-to     --no-cc     --to=kristofferhaugsbakk@fastmail.com     --cover-letter     --output-directory=patches     --header-cmd=./test-cmd     --add-header='X-Not-Command-Header: not that'     'HEAD^{/★meta}'..@
+#+end_src
+
+Gives something like this:
+
+#+begin_src
+==260736== 12,313 bytes in 1 blocks are definitely lost in loss record 166 of 179
+==260736==    at 0x484DCD3: realloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==260736==    by 0x45C4D4: xrealloc (wrapper.c:137)
+==260736==    by 0x4102FC: strbuf_grow (strbuf.c:101)
+==260736==    by 0x411AFC: strbuf_read_once (strbuf.c:519)
+==260736==    by 0x3E5478: pump_io_round (run-command.c:1361)
+==260736==    by 0x3E554E: pump_io (run-command.c:1384)
+==260736==    by 0x3E5933: pipe_command (run-command.c:1448)
+==260736==    by 0x1A5555: capture_command (run-command.h:252)
+==260736==    by 0x1AAF43: set_header_cmd_output (log.c:1898)
+==260736==    by 0x1ACFC7: cmd_format_patch (log.c:2371)
+==260736==    by 0x129B42: run_builtin (git.c:469)
+==260736==    by 0x129FCA: handle_builtin (git.c:724)
+#+end_src
