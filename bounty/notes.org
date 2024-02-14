@@ -74,3 +74,36 @@ I have a /string buffer/. Right? I could, for each patch
 
 The problem though is that the stupid =rev.extra_headers= is just a dumb
 fucking char pointer. Ugh.
+
+* TODO on commit “Never say die” ca.: CI fails because of leak
+
+https://github.com/LemmingAvalanche/git/actions/runs/7905330519/job/21577718875
+
+#+begin_src
+Direct leak of 24 byte(s) in 1 object(s) allocated from:
+    #0 0x7f52806124a3 in __interceptor_realloc ../../../../src/libsanitizer/lsan/lsan_interceptors.cpp:98
+    #1 0x55c2158756b5 in xrealloc wrapper.c:137
+    #2 0x55c215829412 in strbuf_grow strbuf.c:101
+    #3 0x55c21573197e in all_headers log-tree.c:475
+    #4 0x55c215731a2d in log_write_email_headers log-tree.c:490
+    #5 0x55c21573297c in show_log log-tree.c:755
+    #6 0x55c21573403c in log_tree_commit log-tree.c:1176
+    #7 0x55c2155bf7db in cmd_log_walk_no_free builtin/log.c:522
+    #8 0x55c2155c08b8 in cmd_show builtin/log.c:821
+    #9 0x55c215542b42 in run_builtin git.c:469
+    #10 0x55c215542fca in handle_builtin git.c:724
+    #11 0x55c215543271 in run_argv git.c:788
+    #12 0x55c21554385c in cmd_main git.c:923
+    #13 0x55c21565827f in main common-main.c:62
+    #14 0x7f5280229d8f  (/lib/x86_64-linux-gnu/libc.so.6+0x29d8f) (BuildId: c289da5071a3399de893d2af81d6a30c62646e1e)
+    #15 0x7f5280229e3f in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x29e3f) (BuildId: c289da5071a3399de893d2af81d6a30c62646e1e)
+    #16 0x55c215540cc4 in _start (git+0x1fcc4) (BuildId: 8c1bff2742603d7b82440c84a644906d8bf3435c)
+
+DEDUP_TOKEN: __interceptor_realloc--xrealloc--strbuf_grow--all_headers--log_write_email_headers--show_log--log_tree_commit--cmd_log_walk_no_free--cmd_show--run_builtin--handle_builtin--run_argv--cmd_main--main----__libc_start_main--_start
+SUMMARY: LeakSanitizer: 24 byte(s) leaked in 1 allocation(s).
+As TEST_PASSES_SANITIZE_LEAK=true and our logs show we're leaking, exit non-zero!
+# faking up non-zero exit with --invert-exit-code
+Error: Process completed with exit code 2.
+#+end_src
+
+It’s nice that it catches it and points me to where.
