@@ -114,6 +114,8 @@ It’s nice that it catches it and points me to where.
 valgrind --leak-check=full ./git-format-patch     --no-to     --no-cc     --to=kristofferhaugsbakk@fastmail.com     --cover-letter     --output-directory=patches     --header-cmd=./test-cmd     --add-header='X-Not-Command-Header: not that'     'HEAD^{/★meta}'..@
 #+end_src
 
+*** TODO And read up on all of this complicated junk ... https://stackoverflow.com/a/44989219/1725151
+
 Gives something like this:
 
 #+begin_src
