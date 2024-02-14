@@ -15,4 +15,4 @@ printf "X-Count: $GIT_FP_HEADER_CMD_COUNT\n"
 # END Test command
 
 # Diff command :)
-git diff 'HEAD^{/★meta: base}' -- ':(exclude)git-meta/**'
+git diff 'HEAD^{/★meta: base}' -- ':(exclude)bounty/**'
