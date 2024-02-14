@@ -1,5 +1,6 @@
 # ... run it through git-format-patch executable (what an idea!)
 ./git-format-patch \
+    --cover-letter \
     --output-directory=patches \
     --header-cmd=./test-cmd \
     --add-header='X-Not-Command-Header: not that' \
