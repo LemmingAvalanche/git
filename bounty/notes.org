@@ -293,3 +293,7 @@ As TEST_PASSES_SANITIZE_LEAK=true and our logs show we're leaking, and we're fai
 test-results/t4052-stat-output.out...
 ------------------------------------------------------------------------
 #+end_src
+
+* Latest failed CI
+
+https://github.com/LemmingAvalanche/git/actions/runs/7935738898/job/21669533627
