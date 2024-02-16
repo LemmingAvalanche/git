@@ -111,7 +111,11 @@ It’s nice that it catches it and points me to where.
 ** I can use Valgrind to check this
 
 #+begin_src
-valgrind --leak-check=full ./git-format-patch     --no-to     --no-cc     --to=kristofferhaugsbakk@fastmail.com     --cover-letter     --output-directory=patches     --header-cmd=./test-cmd     --add-header='X-Not-Command-Header: not that'     'HEAD^{/★meta}'..@
+valgrind --leak-check=full \
+         --show-leak-kinds=all \
+         --track-origins=yes \
+         --verbose \
+    ./git-format-patch    --no-to     --no-cc     --to=kristofferhaugsbakk@fastmail.com     --cover-letter     --output-directory=patches     --header-cmd=./test-cmd     --add-header='X-Not-Command-Header: not that'     'HEAD^{/★meta}'..@
 #+end_src
 
 *** TODO And read up on all of this complicated junk ... https://stackoverflow.com/a/44989219/1725151
@@ -132,4 +136,15 @@ Gives something like this:
 ==260736==    by 0x1ACFC7: cmd_format_patch (log.c:2371)
 ==260736==    by 0x129B42: run_builtin (git.c:469)
 ==260736==    by 0x129FCA: handle_builtin (git.c:724)
+#+end_src
+
+* Backup of =config.mak=
+
+Because this isn’t version controlled yet… :)
+
+#+begin_src
+DEVELOPER=1
+DEBUG=1
+CFLAGS+=-O0
+CFLAGS+=-ggdb3
 #+end_src
