@@ -202,3 +202,94 @@ DEBUG=1
 CFLAGS+=-O0
 CFLAGS+=-ggdb3
 #+end_src
+
+* CI fails again on d8c6748e83 (I think I need to free here, 2024-02-16)
+
+https://github.com/LemmingAvalanche/git/actions/runs/7935265291/job/21668024101
+
+#+begin_src
+ok 12 - --start-number && --numbered
++ git format-patch --cover-letter --stdout HEAD~1
+Aborted (core dumped)
+error: last command exited with $?=134
+not ok 13 - single patch with cover-letter defaults to numbers
+#
+#		git format-patch --cover-letter --stdout HEAD~1 >patch9.single &&
+#		test_single_cover_letter_numbered patch9.single
+#
+
++ git format-patch --no-numbered --stdout --cover-letter HEAD~1
+Aborted (core dumped)
+error: last command exited with $?=134
+not ok 14 - Use --no-numbered and --cover-letter single patch
+#
+#		git format-patch --no-numbered --stdout --cover-letter HEAD~1 >patch10 &&
+#		test_no_numbered patch10
+#
+
++ rmdir /home/runner/work/git/git/t/test-results/t4021-format-patch-numbered.leak
++ :
++ exit 134
++ eval_ret=134
++ :
+# failed 2 among 14 test(s)
+1..14
+With SANITIZE=leak at exit we have 2 leak logs, but started with 0
+
+This means that we have a blindspot where git is leaking but we're
+losing the exit code somewhere, or not propagating it appropriately
+upwards!
+
+See the logs at "/home/runner/work/git/git/t/test-results/t4021-format-patch-numbered.leak/trace.*";
+those logs are reproduced below.
+
+=================================================================
+==git==124764==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 24 byte(s) in 1 object(s) allocated from:
+    #0 0x7fa9c9a124a3 in __interceptor_realloc ../../../../src/libsanitizer/lsan/lsan_interceptors.cpp:98
+    #1 0x56344abfe6ff in xrealloc wrapper.c:137
+    #2 0x56344abb245c in strbuf_grow strbuf.c:101
+    #3 0x56344aaba9a0 in all_headers log-tree.c:475
+    #4 0x56344aabaa4f in log_write_email_headers log-tree.c:490
+    #5 0x56344a94b355 in make_cover_letter builtin/log.c:1356
+    #6 0x56344a94f0f5 in cmd_format_patch builtin/log.c:2375
+    #7 0x56344a8cbb42 in run_builtin git.c:469
+    #8 0x56344a8cbfca in handle_builtin git.c:724
+    #9 0x56344a8cc271 in run_argv git.c:788
+    #10 0x56344a8cc85c in cmd_main git.c:923
+    #11 0x56344a9e12a1 in main common-main.c:62
+    #12 0x7fa9c9629d8f  (/lib/x86_64-linux-gnu/libc.so.6+0x29d8f) (BuildId: c289da5071a3399de893d2af81d6a30c62646e1e)
+    #13 0x7fa9c9629e3f in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x29e3f) (BuildId: c289da5071a3399de893d2af81d6a30c62646e1e)
+    #14 0x56344a8c9cc4 in _start (git+0x1fcc4) (BuildId: c075050a9ee7fa65d1e9dcdffb88185d2bda3840)
+
+DEDUP_TOKEN: __interceptor_realloc--xrealloc--strbuf_grow--all_headers--log_write_email_headers--make_cover_letter--cmd_format_patch--run_builtin--handle_builtin--run_argv--cmd_main--main----__libc_start_main--_start
+SUMMARY: LeakSanitizer: 24 byte(s) leaked in 1 allocation(s).
+
+=================================================================
+==git==125072==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 24 byte(s) in 1 object(s) allocated from:
+    #0 0x7fe65dc124a3 in __interceptor_realloc ../../../../src/libsanitizer/lsan/lsan_interceptors.cpp:98
+    #1 0x55d2ca14c6ff in xrealloc wrapper.c:137
+    #2 0x55d2ca10045c in strbuf_grow strbuf.c:101
+    #3 0x55d2ca0089a0 in all_headers log-tree.c:475
+    #4 0x55d2ca008a4f in log_write_email_headers log-tree.c:490
+    #5 0x55d2c9e99355 in make_cover_letter builtin/log.c:1356
+    #6 0x55d2c9e9d0f5 in cmd_format_patch builtin/log.c:2375
+    #7 0x55d2c9e19b42 in run_builtin git.c:469
+    #8 0x55d2c9e19fca in handle_builtin git.c:724
+    #9 0x55d2c9e1a271 in run_argv git.c:788
+    #10 0x55d2c9e1a85c in cmd_main git.c:923
+    #11 0x55d2c9f2f2a1 in main common-main.c:62
+    #12 0x7fe65d829d8f  (/lib/x86_64-linux-gnu/libc.so.6+0x29d8f) (BuildId: c289da5071a3399de893d2af81d6a30c62646e1e)
+    #13 0x7fe65d829e3f in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x29e3f) (BuildId: c289da5071a3399de893d2af81d6a30c62646e1e)
+    #14 0x55d2c9e17cc4 in _start (git+0x1fcc4) (BuildId: c075050a9ee7fa65d1e9dcdffb88185d2bda3840)
+
+DEDUP_TOKEN: __interceptor_realloc--xrealloc--strbuf_grow--all_headers--log_write_email_headers--make_cover_letter--cmd_format_patch--run_builtin--handle_builtin--run_argv--cmd_main--main----__libc_start_main--_start
+SUMMARY: LeakSanitizer: 24 byte(s) leaked in 1 allocation(s).
+As TEST_PASSES_SANITIZE_LEAK=true and our logs show we're leaking, and we're failing for other reasons too...
+------------------------------------------------------------------------
+test-results/t4052-stat-output.out...
+------------------------------------------------------------------------
+#+end_src
