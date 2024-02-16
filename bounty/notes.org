@@ -110,7 +110,7 @@ It’s nice that it catches it and points me to where.
 
 ** I can use Valgrind to check this
 
-#+begin_src
+#+begin_src shell
 valgrind --leak-check=full \
          --show-leak-kinds=all \
          --track-origins=yes \
@@ -136,6 +136,28 @@ Gives something like this:
 ==260736==    by 0x1ACFC7: cmd_format_patch (log.c:2371)
 ==260736==    by 0x129B42: run_builtin (git.c:469)
 ==260736==    by 0x129FCA: handle_builtin (git.c:724)
+#+end_src
+
+** Freshest output for this command
+
+(There’s a lot of output that is not about my codepath it seems)
+
+Looks relevant
+
+#+begin_src
+==72229== 384 bytes in 1 blocks are still reachable in loss record 77 of 103
+==72229==    at 0x48487A9: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==72229==    by 0x45C4F6: xrealloc (wrapper.c:137)
+==72229==    by 0x4150C7: string_list_append_nodup (string-list.c:218)
+==72229==    by 0x415155: string_list_append (string-list.c:228)
+==72229==    by 0x1A7CD3: add_header (log.c:928)
+==72229==    by 0x1A9D5D: header_callback (log.c:1584)
+==72229==    by 0x37C401: do_get_value (parse-options.c:164)
+==72229==    by 0x37C87E: get_value (parse-options.c:257)
+==72229==    by 0x37CF7C: parse_long_opt (parse-options.c:426)
+==72229==    by 0x37E912: parse_options_step (parse-options.c:950)
+==72229==    by 0x37EC24: parse_options (parse-options.c:1018)
+==72229==    by 0x1AC04D: cmd_format_patch (log.c:2083)
 #+end_src
 
 * Backup of =config.mak=
