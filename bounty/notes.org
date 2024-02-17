@@ -312,3 +312,40 @@ strbuf_list_free
 So I could use that.
 
 It seems that it is just a free list specifically for strbuf.
+
+* We’re still leaking in “Don’t take ownership here, either”
+
+https://github.com/LemmingAvalanche/git/actions/runs/7941079667/job/21683041041
+
+#+begin_src
+DEDUP_TOKEN: __interceptor_realloc--xrealloc--strbuf_grow--all_headers--log_write_email_headers--show_log--log_tree_commit--cmd_log_walk_no_free--cmd_show--run_builtin--handle_builtin--run_argv--cmd_main--main----__libc_start_main--_start
+SUMMARY: LeakSanitizer: 24 byte(s) leaked in 1 allocation(s).
+
+=================================================================
+==git==160141==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 24 byte(s) in 1 object(s) allocated from:
+    #0 0x7ff2ec4124a3 in __interceptor_realloc ../../../../src/libsanitizer/lsan/lsan_interceptors.cpp:98
+    #1 0x5643e77c9762 in xrealloc wrapper.c:137
+    #2 0x5643e777d4bf in strbuf_grow strbuf.c:101
+    #3 0x5643e7685a0e in all_headers log-tree.c:475
+    #4 0x5643e7685ab0 in log_write_email_headers log-tree.c:491
+    #5 0x5643e7686a0c in show_log log-tree.c:756
+    #6 0x5643e76880cc in log_tree_commit log-tree.c:1177
+    #7 0x5643e75137fb in cmd_log_walk_no_free builtin/log.c:522
+    #8 0x5643e75148d8 in cmd_show builtin/log.c:821
+    #9 0x5643e7496b42 in run_builtin git.c:469
+    #10 0x5643e7496fca in handle_builtin git.c:724
+    #11 0x5643e7497271 in run_argv git.c:788
+    #12 0x5643e749785c in cmd_main git.c:923
+    #13 0x5643e75ac309 in main common-main.c:62
+    #14 0x7ff2ec029d8f  (/lib/x86_64-linux-gnu/libc.so.6+0x29d8f) (BuildId: c289da5071a3399de893d2af81d6a30c62646e1e)
+    #15 0x7ff2ec029e3f in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x29e3f) (BuildId: c289da5071a3399de893d2af81d6a30c62646e1e)
+    #16 0x5643e7494cc4 in _start (git+0x1fcc4) (BuildId: b0f24bfac3c0aca8690f7812fee2ae65a6ad674c)
+
+DEDUP_TOKEN: __interceptor_realloc--xrealloc--strbuf_grow--all_headers--log_write_email_headers--show_log--log_tree_commit--cmd_log_walk_no_free--cmd_show--run_builtin--handle_builtin--run_argv--cmd_main--main----__libc_start_main--_start
+SUMMARY: LeakSanitizer: 24 byte(s) leaked in 1 allocation(s).
+As TEST_PASSES_SANITIZE_LEAK=true and our logs show we're leaking, exit non-zero!
+# faking up non-zero exit with --invert-exit-code
+Error: Process completed with exit code 2.
+#+end_src
