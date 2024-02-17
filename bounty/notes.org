@@ -313,6 +313,13 @@ So I could use that.
 
 It seems that it is just a free list specifically for strbuf.
 
+** Update: doesn’t seem appropriate
+
+All the usages I’ve found get this double pointer from some strbuf
+function. Hmm, which is not the case for me.
+
+How about using =string_list=?
+
 * We’re still leaking in “Don’t take ownership here, either”
 
 https://github.com/LemmingAvalanche/git/actions/runs/7941079667/job/21683041041
