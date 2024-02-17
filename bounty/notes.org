@@ -475,3 +475,10 @@ That =BUG= is from
 Some perl stuffz.
 
 How on earth could this be related to my thing?
+
+* No leaks on the base commit
+
+I have based this branch for now on =v2.44.0-rc1=. And… No leaks from
+running CI on that.
+
+https://github.com/LemmingAvalanche/git/actions/runs/7942187391
