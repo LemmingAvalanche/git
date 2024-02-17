@@ -349,3 +349,40 @@ As TEST_PASSES_SANITIZE_LEAK=true and our logs show we're leaking, exit non-zero
 # faking up non-zero exit with --invert-exit-code
 Error: Process completed with exit code 2.
 #+end_src
+
+* Still leaking in “Revert "Take ownership of pointer (extra_headers)"”
+
+https://github.com/LemmingAvalanche/git/actions/runs/7941325609/job/21683554019
+
+#+begin_src
+DEDUP_TOKEN: __interceptor_realloc--xrealloc--strbuf_grow--all_headers--log_write_email_headers--show_log--log_tree_commit--cmd_log_walk_no_free--cmd_show--run_builtin--handle_builtin--run_argv--cmd_main--main----__libc_start_main--_start
+SUMMARY: LeakSanitizer: 24 byte(s) leaked in 1 allocation(s).
+
+=================================================================
+==git==160230==ERROR: LeakSanitizer: detected memory leaks
+
+Direct leak of 24 byte(s) in 1 object(s) allocated from:
+    #0 0x7f65c80124a3 in __interceptor_realloc ../../../../src/libsanitizer/lsan/lsan_interceptors.cpp:98
+    #1 0x564a6e8f0755 in xrealloc wrapper.c:137
+    #2 0x564a6e8a44b2 in strbuf_grow strbuf.c:101
+    #3 0x564a6e7aca0e in all_headers log-tree.c:475
+    #4 0x564a6e7acab0 in log_write_email_headers log-tree.c:491
+    #5 0x564a6e7ad9ff in show_log log-tree.c:756
+    #6 0x564a6e7af0bf in log_tree_commit log-tree.c:1177
+    #7 0x564a6e63a7fb in cmd_log_walk_no_free builtin/log.c:522
+    #8 0x564a6e63b8d8 in cmd_show builtin/log.c:821
+    #9 0x564a6e5bdb42 in run_builtin git.c:469
+    #10 0x564a6e5bdfca in handle_builtin git.c:724
+    #11 0x564a6e5be271 in run_argv git.c:788
+    #12 0x564a6e5be85c in cmd_main git.c:923
+    #13 0x564a6e6d3309 in main common-main.c:62
+    #14 0x7f65c7c29d8f  (/lib/x86_64-linux-gnu/libc.so.6+0x29d8f) (BuildId: c289da5071a3399de893d2af81d6a30c62646e1e)
+    #15 0x7f65c7c29e3f in __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x29e3f) (BuildId: c289da5071a3399de893d2af81d6a30c62646e1e)
+    #16 0x564a6e5bbcc4 in _start (git+0x1fcc4) (BuildId: 3cad906c4158add6c8e9c9ffcb88272ce0c011d9)
+
+DEDUP_TOKEN: __interceptor_realloc--xrealloc--strbuf_grow--all_headers--log_write_email_headers--show_log--log_tree_commit--cmd_log_walk_no_free--cmd_show--run_builtin--handle_builtin--run_argv--cmd_main--main----__libc_start_main--_start
+SUMMARY: LeakSanitizer: 24 byte(s) leaked in 1 allocation(s).
+As TEST_PASSES_SANITIZE_LEAK=true and our logs show we're leaking, exit non-zero!
+# faking up non-zero exit with --invert-exit-code
+Error: Process completed with exit code 2.
+#+end_src
