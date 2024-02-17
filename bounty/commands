@@ -21,3 +21,11 @@ printf "X-Patch-Type: $GIT_FP_HEADER_CMD_PATCH_TYPE"
 
 # Diff command :)
 git diff 'HEAD^{/★meta: base}' -- ':(exclude)bounty/**'
+
+# For t/
+./t4014-format-patch.sh &&
+./t4021-format-patch-numbered.sh &&
+./t4028-format-patch-mime-headers.sh &&
+./t4036-format-patch-signer-mime.sh &&
+say-done ||
+say-failed
