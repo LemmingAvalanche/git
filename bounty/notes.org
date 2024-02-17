@@ -297,3 +297,18 @@ test-results/t4052-stat-output.out...
 * Latest failed CI
 
 https://github.com/LemmingAvalanche/git/actions/runs/7935738898/job/21669533627
+
+* Using a free list of something
+
+I could try to make a free list of all strbuf that I have allocated for
+the command output of header_cmd.
+
+There is apparently this function:
+
+#+begin_src
+strbuf_list_free
+#+end_src
+
+So I could use that.
+
+It seems that it is just a free list specifically for strbuf.
