@@ -482,3 +482,41 @@ I have based this branch for now on =v2.44.0-rc1=. And… No leaks from
 running CI on that.
 
 https://github.com/LemmingAvalanche/git/actions/runs/7942187391
+
+* Test failue on “Back to owning the pointers”
+
+#+begin_src
+./t4014-format-patch.sh --verbose-only=25
+#+end_src
+
+Run the command manually. The header/message separation is messed up:
+
+#+begin_src
+From ae7a71142149d1c89c15bc659034fce5ec05f616 Mon Sep 17 00:00:00 2001
+Message-ID: <ae7a71142149d1c89c15bc659034fce5ec05f616.1708105356.git.code@khaugsbakk.name>
+In-Reply-To: <cover.1708105355.git.code@khaugsbakk.name>
+References: <cover.1708105355.git.code@khaugsbakk.name>
+From: Kristoffer Haugsbakk <code@khaugsbakk.name>
+Date: Wed, 7 Feb 2024 20:50:41 +0100
+Subject: [PATCH 02/44] NOTE Fucking pray to god now
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Not-Command-Header: not that
+To: kristofferhaugsbakk@fastmail.com
+X-Version: 1
+X-ShaOne: ae7a71142149d1c89c15bc659034fce5ec05f616
+X-Count: 2
+X-Patch-Type: commit
+NOTE BUT GUESS FUCKING WHAT
+
+    ```
+    patches/0033-Fucking-pray-to-god-now.patch
+    Segmentation fault (core dumped)
+    ```
+
+    Well it’s not that bad. We are able to print all the patches.
+
+    It just fails after that. During cleanup?
+---
+#+end_src
