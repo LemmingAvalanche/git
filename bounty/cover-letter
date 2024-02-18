@@ -1,7 +1,5 @@
 format-patch: teach `--header-cmd`
 
-(The above is the subject line—neat)
-
 I want this really bad so that I can compute headers based on info in
 per commit/cover letter.
 

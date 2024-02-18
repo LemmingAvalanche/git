@@ -1,13 +1,33 @@
 # ... run it through git-format-patch executable (what an idea!)
 ./git-format-patch \
-    --no-to \
     --no-cc \
+    --description-file=cover-letter.txt \
     --to=kristofferhaugsbakk@fastmail.com \
     --cover-letter \
     --output-directory=patches \
     --header-cmd=./test-cmd \
     --add-header='X-Not-Command-Header: not that' \
     'HEAD^{/★meta}'..@
+
+# Test with a corrupted --add-header
+# NOTE: format-patch doesn’t error out
+./git-format-patch \
+    --no-cc \
+    --description-file=cover-letter.txt \
+    --to=kristofferhaugsbakk@fastmail.com \
+    --cover-letter \
+    --output-directory=patches \
+    --header-cmd=./test-cmd \
+    --add-header=$'X-Not-Command-Header\n\n: not that' \
+    'HEAD^{/★meta}'..@
+
+# Experiment with `git send-email --header-cmd`
+git send-email --dry-run \
+    --header-cmd=./send-email-header-cmd patches
+
+# Corrupt version
+git send-email --no-cc --dry-run \
+    --header-cmd=./send-email-header-cmd-corrupt patches
 
 # Test command for --header-cmd
 #!/bin/sh
@@ -29,3 +49,16 @@ git diff 'HEAD^{/★meta: base}' -- ':(exclude)bounty/**'
 ./t4036-format-patch-signer-mime.sh &&
 say-done ||
 say-failed
+
+# git send-email header-cmd
+#!/bin/sh
+printf "X-Header-One: One\n"
+printf "X-Header-Two: Two\n"
+# END
+
+# Corrupt git send-email header-cmd
+#!/bin/sh
+printf "X-Header-One: One\n"
+printf "\n\n"
+printf "X-Header-Two: Two\n"
+# END

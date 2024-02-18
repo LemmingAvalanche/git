@@ -520,3 +520,19 @@ NOTE BUT GUESS FUCKING WHAT
     It just fails after that. During cleanup?
 ---
 #+end_src
+
+* How to validate header-cmd output
+
+=--header-cmd= for send-email does some validation. I guess I should do
+some too.
+
+** Minimal
+
+Check that there are no blank lines.
+
+** Research on existing code
+
+- am.c
+  - Has =is_mail= which looks promising
+- mailinfo.c
+  - =is_rfc2822_header=
