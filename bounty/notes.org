@@ -536,3 +536,11 @@ Check that there are no blank lines.
   - Has =is_mail= which looks promising
 - mailinfo.c
   - =is_rfc2822_header=
+
+* TODO Umm... my header check doesn’t seem to work
+
+This doesn’t error. It should error.
+
+#+begin_src
+./git-format-patch     --no-cc     --description-file=cover-letter.txt     --to=kristofferhaugsbakk@fastmail.com     --cover-letter     --output-directory=patches     --header-cmd=./test-cmd-corrupted     --add-header='X-Not-Command-Header: not that'     'HEAD^{/★meta}'..@
+#+end_src
