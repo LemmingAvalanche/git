@@ -537,10 +537,22 @@ Check that there are no blank lines.
 - mailinfo.c
   - =is_rfc2822_header=
 
-* TODO Umm... my header check doesn’t seem to work
+* DONE Umm... my header check doesn’t seem to work
+CLOSED: [2024-02-19 ma. 20:17]
 
+- CLOSING NOTE [2024-02-19 ma. 20:17] \\
+  Works now
 This doesn’t error. It should error.
 
 #+begin_src
 ./git-format-patch     --no-cc     --description-file=cover-letter.txt     --to=kristofferhaugsbakk@fastmail.com     --cover-letter     --output-directory=patches     --header-cmd=./test-cmd-corrupted     --add-header='X-Not-Command-Header: not that'     'HEAD^{/★meta}'..@
 #+end_src
+
+* TODO Make sure that you can output /nothing/ and still things work
+
+The output should be optional… in the sense that you should be able to
+say: okay, turns out that I have nothing to output for headers… and
+things should work.
+
+So you should /not/ get an empty string which inserts an empty line in
+the headers and just messes things up. Or something like that.
