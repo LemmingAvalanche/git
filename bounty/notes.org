@@ -548,8 +548,12 @@ This doesn’t error. It should error.
 ./git-format-patch     --no-cc     --description-file=cover-letter.txt     --to=kristofferhaugsbakk@fastmail.com     --cover-letter     --output-directory=patches     --header-cmd=./test-cmd-corrupted     --add-header='X-Not-Command-Header: not that'     'HEAD^{/★meta}'..@
 #+end_src
 
-* TODO Make sure that you can output /nothing/ and still things work
+* DONE Make sure that you can output /nothing/ and still things work
+CLOSED: [2024-02-19 ma. 20:27]
 
+- CLOSING NOTE [2024-02-19 ma. 20:27] \\
+  There’s a test case in the suite now. And I tested manually—made sure
+  that the headers look correct (no extra newline nonsense).
 The output should be optional… in the sense that you should be able to
 say: okay, turns out that I have nothing to output for headers… and
 things should work.

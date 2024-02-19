@@ -69,6 +69,17 @@ printf "X-Count: $GIT_FP_HEADER_CMD_COUNT\n"
     --add-header='X-Not-Command-Header: not that' \
     'HEAD^{/★meta}'..@
 
+# header-cmd gives no output (should work; give correct headers)
+./git-format-patch \
+    --no-cc \
+    --description-file=cover-letter.txt \
+    --to=kristofferhaugsbakk@fastmail.com \
+    --cover-letter \
+    --output-directory=patches \
+    --header-cmd=./test-cmd-no-output \
+    --add-header='X-Not-Command-Header: not that' \
+    'HEAD^{/★meta}'..@
+
 # Diff command :)
 git diff 'HEAD^{/★meta: base}' -- ':(exclude)bounty/**'
 
