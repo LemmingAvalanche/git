@@ -28,7 +28,7 @@
     --to=kristofferhaugsbakk@fastmail.com \
     --cover-letter \
     --output-directory=patches \
-    --add-header=$'X-Not-Command-Header: not that' \
+    --add-header='X-Not-Command-Header: not that' \
     'HEAD^{/★meta}'..@
 
 # Experiment with `git send-email --header-cmd`
@@ -43,8 +43,10 @@ git send-email --no-cc --dry-run \
 #!/bin/sh
 
 printf "X-Version: $GIT_FP_HEADER_CMD_VERSION\n"
-hash="$GIT_FP_HEADER_CMD_SHA1"
-! test -z $hash && printf "X-ShaOne: $GIT_FP_HEADER_CMD_SHA1\n"
+hash="$GIT_FP_HEADER_CMD_HASH"
+if [ $hash ]; then
+    printf "X-ShaOne: $hash\n"
+fi
 printf "X-Count: $GIT_FP_HEADER_CMD_COUNT\n"
 
 # END Test command
