@@ -28,7 +28,7 @@
     --to=kristofferhaugsbakk@fastmail.com \
     --cover-letter \
     --output-directory=patches \
-    --add-header=$'X-Not-Command-Header\n\n: not that' \
+    --add-header=$'X-Not-Command-Header: not that' \
     'HEAD^{/★meta}'..@
 
 # Experiment with `git send-email --header-cmd`
