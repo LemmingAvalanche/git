@@ -21,6 +21,16 @@
     --add-header=$'X-Not-Command-Header\n\n: not that' \
     'HEAD^{/★meta}'..@
 
+# Test config: should run the config headerCmd that I set
+./git-format-patch \
+    --no-cc \
+    --description-file=cover-letter.txt \
+    --to=kristofferhaugsbakk@fastmail.com \
+    --cover-letter \
+    --output-directory=patches \
+    --add-header=$'X-Not-Command-Header\n\n: not that' \
+    'HEAD^{/★meta}'..@
+
 # Experiment with `git send-email --header-cmd`
 git send-email --dry-run \
     --header-cmd=./send-email-header-cmd patches
