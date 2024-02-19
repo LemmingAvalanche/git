@@ -10,7 +10,7 @@
     'HEAD^{/★meta}'..@
 
 # Test with a corrupted --add-header
-# NOTE: format-patch doesn’t error out
+# NOTE: format-patch doesn’t error out. Not my problem though.
 ./git-format-patch \
     --no-cc \
     --description-file=cover-letter.txt \
