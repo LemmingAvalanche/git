@@ -1876,6 +1876,35 @@ static void infer_range_diff_ranges(struct strbuf *r1,
 	}
 }
 
+static int is_mail(struct strbuf *sb)
+{
+	const char *header_regex = "^[!-9;-~]+:";
+	regex_t regex;
+	int ret = 1, i;
+	struct string_list list = STRING_LIST_INIT_DUP;
+
+	if (regcomp(&regex, header_regex, REG_NOSUB | REG_EXTENDED))
+		die("invalid pattern: %s", header_regex);
+	string_list_split(&list, sb->buf, '\n', -1);
+	for (i = 0; i < list.nr; i++) {
+		/* End of header */
+		if (!*list.items[i].string && i == (list.nr - 1))
+			break;
+		/* Ignore indented folded lines */
+		if (*list.items[i].string == '\t' ||
+		    *list.items[i].string == ' ')
+			continue;
+		/* It's a header if it matches header_regex */
+		if (regexec(&regex, list.items[i].string, 0, NULL, 0)) {
+			ret = 0;
+			break;
+		}
+	}
+	string_list_clear(&list, 1);
+	regfree(&regex);
+	return ret;
+}
+
 /* Returns an owned pointer */
 static char *header_cmd_output(struct rev_info *rev, const struct commit *cmit)
 {
@@ -1902,6 +1931,10 @@ static char *header_cmd_output(struct rev_info *rev, const struct commit *cmit)
 			die(_("header-cmd %s: failed with exit code %d"),
 			    header_cmd, res);
 	}
+	if (!is_mail(&output))
+		die(_("header-cmd %s: returned output which was "
+		      "not recognized as valid RFC 2822 headers"),
+		    header_cmd);
 	return strbuf_detach(&output, NULL);
 }
 
