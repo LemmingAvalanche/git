@@ -576,8 +576,11 @@ static void copy_or_rename_branch(const char *oldname, const char *newname, int 
 		 */
 		if (ref_exists(oldref.buf))
 			recovery = 1;
-		else
-			die(_("invalid branch name: '%s'"), oldname);
+		else {
+			error(_("invalid branch name: '%s'"), oldname);
+			error(_("see `man git check-ref-format`"));
+			exit(1);
+		}
 	}
 
 	for (int i = 0; worktrees[i]; i++) {

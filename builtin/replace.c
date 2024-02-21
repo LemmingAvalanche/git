@@ -160,8 +160,10 @@ static int check_ref_valid(struct object_id *object,
 
 	strbuf_reset(ref);
 	strbuf_addf(ref, "%s%s", git_replace_ref_base, oid_to_hex(object));
-	if (check_refname_format(ref->buf, 0))
-		return error(_("'%s' is not a valid ref name"), ref->buf);
+	if (check_refname_format(ref->buf, 0)) {
+		error(_("'%s' is not a valid ref name"), ref->buf);
+		return error(_("see `man git check-ref-format`"));
+	}
 
 	if (read_ref(ref->buf, prev))
 		oidclr(prev);
