@@ -2,3 +2,7 @@
 
 - Use =advice=?
 - die? exit(0)?
+
+* Piece of advice: the verb is named “advise”!
+
+Goddamnit.
