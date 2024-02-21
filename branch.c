@@ -372,7 +372,7 @@ int validate_branchname(const char *name, struct strbuf *ref)
 {
 	if (strbuf_check_branch_ref(ref, name)) {
 		error(_("'%s' is not a valid branch name"), name);
-		error(_("see `man git check-ref-format`"));
+		advise(_("See `man git check-ref-format`"));
 		exit(1);
 	}
 
