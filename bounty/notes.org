@@ -560,3 +560,19 @@ things should work.
 
 So you should /not/ get an empty string which inserts an empty line in
 the headers and just messes things up. Or something like that.
+
+* Applying this to another series!
+[2024-03-01 fr.]
+
+I’ve just started using this in another series: branch
+=ref-syntax-khg-5=.
+
+See:
+
+https://www.fastmailusercontent.com/jmap/download/u6d1140ad/G8c318b2ec15bca52cc2ac592ac960aeb561ea9bb/%5BPATCH%5D%20branch%3A%20advise%20about%20ref%20syntax%20rules.eml?type=text%2Fplain&u=6d1140ad&access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhNjU2NGY1OTk1ZjIzOWZmNjU0M2MwZjNhYzUxNWU2ZSIsInN1YiI6IlFlWHVZR0xLTlJqUF9mTVJZYjJOcVgzS2l0ZUFfdGs4U0NlM3VRR2g3YkkiLCJpYXQiOjE3MDkzMDg4MDB9.B0bNYTxWzh2LFiziC6SYW2HXU9Wt3_K04Q-eF-WTwOw
+
+#+begin_src
+X-Commit-Hash: d275d1d179b90592ddd7b5da2ae4573b3f7a37b7
+#+end_src
+
+No “previous” header yet of course since this is the first version.
