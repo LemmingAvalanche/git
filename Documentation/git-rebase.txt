@@ -578,6 +578,10 @@ squash/fixup series.
 This uses the `--interactive` machinery internally, but it can be run
 without an explicit `--interactive`.
 +
+The command has access to the environment variable `GIT_REBASE_BRANCH`
+which stores the branch name that `HEAD` was pointing to when the rebase
+started, if applicable.
++
 See also INCOMPATIBLE OPTIONS below.
 
 --root::

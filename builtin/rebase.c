@@ -1044,6 +1044,17 @@ static int check_exec_cmd(const char *cmd)
 	return 0;
 }
 
+static void try_set_env_git_rebase_branch(void)
+{
+	const char *refname = resolve_ref_unsafe("HEAD", 0, NULL, 0);
+	const char *shortname = NULL;
+
+	if (refname)
+		skip_prefix(refname, "refs/heads/", &shortname);
+	if (shortname)
+		xsetenv("GIT_REBASE_BRANCH", shortname, true);
+}
+
 int cmd_rebase(int argc, const char **argv, const char *prefix)
 {
 	struct rebase_options options = REBASE_OPTIONS_INIT;
@@ -1451,8 +1462,10 @@ int cmd_rebase(int argc, const char **argv, const char *prefix)
 	if (gpg_sign)
 		options.gpg_sign_opt = xstrfmt("-S%s", gpg_sign);
 
-	if (options.exec.nr)
+	if (options.exec.nr) {
 		imply_merge(&options, "--exec");
+		try_set_env_git_rebase_branch();
+	}
 
 	if (options.type == REBASE_APPLY) {
 		if (ignore_whitespace)
