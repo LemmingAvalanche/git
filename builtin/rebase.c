@@ -1046,7 +1046,7 @@ static int check_exec_cmd(const char *cmd)
 
 static void try_set_env_git_rebase_branch(void)
 {
-	const char *refname = resolve_ref_unsafe("HEAD", 0, NULL, 0);
+	const char *refname = resolve_ref_unsafe("HEAD", 0, NULL, NULL);
 	const char *shortname = NULL;
 
 	if (refname)
