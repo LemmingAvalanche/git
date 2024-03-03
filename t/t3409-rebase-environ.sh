@@ -25,15 +25,13 @@ test_expect_success 'rebase --exec cmd can access GIT_REBASE_BRANCH' '
 	write_script cmd <<-\EOF &&
 printf "%s\n" $GIT_REBASE_BRANCH >actual
 EOF
+	git branch --show-current >expect &&
 	git rebase --exec ./cmd HEAD~1 &&
-cat <<\EOF >expect &&
-master
-EOF
 	test_cmp expect actual
 '
 
 test_expect_success 'rebase --exec cmd has no GIT_REBASE_BRANCH when on detached HEAD' '
-	test_when_finished git checkout master &&
+	test_when_finished git checkout - &&
 	git checkout --detach &&
 	write_script cmd <<-\EOF &&
 printf "%s" $GIT_REBASE_BRANCH >environ
