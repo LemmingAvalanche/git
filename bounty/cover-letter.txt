@@ -1,6 +1,6 @@
 format-patch: teach `--header-cmd`
 
-(most of this is from the main commit)
+(most of this is from the main commit with some elaboration in parts)
 
 Teach git-format-patch(1) `--header-cmd` (with negation) and the
 accompanying config variable `format.headerCmd` which allows the user to
@@ -21,10 +21,23 @@ This is inspired by `--header-cmd` of git-send-email(1).
 
 § Discussion
 
-The command can use the provided commit hash to provide relevant
-information in the header. For example, the command could output a
-header for the current commit as well as the previously-published
-commits:
+One may already get the commit hash from the commit by looking at the message id created by format-patch:
+
+    Message-ID: <48c517ffb3dce2188aba5f0a2c1f4f9dc8df59f0.1709840255.git.code@khaugsbakk.name>
+
+However that does not seem to be documented behavior, and relying on the
+message id from various tools seems to have backfired before.[1]
+
+It’s also more convenient to not have to parse any output from
+format-patch.
+
+One may also be interested in finding some information based on the
+commit hash, not just simply to output the hash itself.
+
+🔗 1: https://lore.kernel.org/git/20231106153214.s5abourejkuiwk64@pengutronix.de/
+
+For example, the command could output a header for the current commit as
+well as another header for the previously-published commits:
 
     X-Commit-Hash: 97b53c04894578b23d0c650f69885f734699afc7
     X-Previous-Commits:
@@ -32,14 +45,20 @@ commits:
         d275d1d179b90592ddd7b5da2ae4573b3f7a37b7
         402b7937951073466bf4527caffd38175391c7da
 
+One can imagine that (1) these previous commit hashes were stored on every
+commit rewrite and (2) the commits that had been published previously
+were also stored. Then the command just needed the current commit hash
+in order to look up this information.
+
 Now interested parties can use this information to track where the
 patches come from.
 
 This information could of course be given between the
-three-dash/three-hyphen line and the patch proper. However, the project
-might prefer to use this part for extra patch information written by the
-author and leave the above information for tooling; this way the extra
-information does not need to disturb the reader.
+three-dash/three-hyphen line and the patch proper. However, the
+hypoethetical project in question might prefer to use this part for
+extra patch information written by the author and leave the above
+information for tooling; this way the extra information does not need to
+disturb the reader.
 
 § Demonstration
 
