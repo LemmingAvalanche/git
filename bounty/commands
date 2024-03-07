@@ -1,4 +1,5 @@
 # REAL format patch
+trash patches
 ./git-format-patch \
     --description-file=bounty/cover-letter.txt \
     --to=git@vger.kernel.org \
