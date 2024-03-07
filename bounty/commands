@@ -1,3 +1,12 @@
+# REAL format patch
+./git-format-patch \
+    --description-file=bounty/cover-letter.txt \
+    --to=git@vger.kernel.org \
+    --cover-letter \
+    --output-directory=patches \
+    --header-cmd=mustard-git-headers \
+    'HEAD^{/★meta}'..@
+
 # ... run it through git-format-patch executable (what an idea!)
 ./git-format-patch \
     --no-cc \

@@ -46,3 +46,15 @@ information does not need to disturb the reader.
 The above current/previous hash example is taken from:
 
 https://lore.kernel.org/git/97b53c04894578b23d0c650f69885f734699afc7.1709670287.git.code@khaugsbakk.name/
+
+§ CC
+
+For patch “log-tree: take ownership of pointer”:
+
+Cc: Jeff King <peff@peff.net>
+
+For the git-send-email(1) `--header-cmd` topic:[1]
+
+Cc: Maxim Cournoyer <maxim.cournoyer@gmail.com>
+
+🔗 1: https://lore.kernel.org/git/20230423122744.4865-1-maxim.cournoyer@gmail.com/
