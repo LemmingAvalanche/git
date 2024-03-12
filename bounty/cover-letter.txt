@@ -75,6 +75,8 @@ https://lore.kernel.org/git/97b53c04894578b23d0c650f69885f734699afc7.1709670287.
 • format-patch: teach `--header-cmd`
   • Simplify tests: use `true` and `false` as commands
   • Fix indentation
+  • Don’t use `const` for owned pointer (avoid cast when freeing)
+    • https://lore.kernel.org/git/cover.1709841147.git.code@khaugsbakk.name/T/#m12d104a5a769c7f6e02b1d0a75855142004e9206
 
 § CC
 
