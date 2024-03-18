@@ -303,6 +303,29 @@ feeding the result to `git send-email`.
 	`Cc:`, and custom) headers added so far from config or command
 	line.
 
+--[no-]header-cmd=<cmd>::
+	Run _<cmd>_ for each patch. _<cmd>_ should output valid RFC 2822
+	email headers. This can also be configured with
+	the configuration variable `format.headerCmd`. Can be turned off
+	with `--no-header-cmd`. This works independently of
+	`--[no-]add-header`.
++
+_<cmd>_ has access to these environment variables:
++
+--
+GIT_FP_HEADER_CMD_VERSION;;
+	The version of this API. Currently `1`. _<cmd>_ may return exit code
+	`2` in order to signal that it does not support the given version.
+GIT_FP_HEADER_CMD_HASH;;
+	The hash of the commit corresponding to the current patch. Not set if
+	the current patch is the cover letter.
+GIT_FP_HEADER_CMD_COUNT;;
+	The current patch count. Increments for each patch.
+--
++
+`git format-patch` will error out if _<cmd>_ returns a non-zero exit
+code.
+
 --[no-]cover-letter::
 	In addition to the patches, generate a cover letter file
 	containing the branch description, shortlog and the overall diffstat.  You can

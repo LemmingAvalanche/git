@@ -31,6 +31,11 @@ format.headers::
 	Additional email headers to include in a patch to be submitted
 	by mail.  See linkgit:git-format-patch[1].
 
+format.headerCmd::
+	Command to run for each patch that should output RFC 2822 email
+	headers. Has access to some information per patch via
+	environment variables. See linkgit:git-format-patch[1].
+
 format.to::
 format.cc::
 	Additional recipients to include in a patch to be submitted

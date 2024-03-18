@@ -238,6 +238,42 @@ test_expect_failure 'configuration To: header (rfc2047)' '
 	grep "^To: =?UTF-8?q?R=20=C3=84=20Cipient?= <rcipient@example.com>\$" hdrs9
 '
 
+test_expect_success '--header-cmd' '
+	write_script cmd <<-\EOF &&
+	printf "X-S: $GIT_FP_HEADER_CMD_HASH\n"
+	printf "X-V: $GIT_FP_HEADER_CMD_VERSION\n"
+	printf "X-C: $GIT_FP_HEADER_CMD_COUNT\n"
+	EOF
+	expect_sha1=$(git rev-parse side) &&
+	git format-patch --header-cmd=./cmd --stdout main..side >patch &&
+	grep "^X-S: $expect_sha1" patch &&
+	grep "^X-V: 1" patch &&
+	grep "^X-C: 3" patch
+'
+
+test_expect_success '--header-cmd with no output works' '
+	git format-patch --header-cmd=true --stdout main..side
+'
+
+test_expect_success '--header-cmd reports failed command' '
+	cat > expect <<-\EOF &&
+	fatal: header-cmd false: failed with exit code 1
+	EOF
+	test_must_fail git format-patch --header-cmd=false --stdout main..side >actual 2>&1 &&
+	test_cmp expect actual
+'
+
+test_expect_success '--header-cmd reports exit code 2' '
+	write_script cmd <<-\EOF &&
+	exit 2
+	EOF
+	cat > expect <<-\EOF &&
+	fatal: header-cmd ./cmd: returned exit code 2; the command does not support version 1
+	EOF
+	test_must_fail git format-patch --header-cmd=./cmd --stdout main..side >actual 2>&1 &&
+	test_cmp expect actual
+'
+
 # check_patch <patch>: Verify that <patch> looks like a half-sane
 # patch email to avoid a false positive with !grep
 check_patch () {

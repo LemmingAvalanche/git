@@ -43,10 +43,13 @@
 #include "tmp-objdir.h"
 #include "tree.h"
 #include "write-or-die.h"
+#include "run-command.h"
 
 #define MAIL_DEFAULT_WRAP 72
 #define COVER_FROM_AUTO_MAX_SUBJECT_LEN 100
 #define FORMAT_PATCH_NAME_MAX_DEFAULT 64
+#define HC_VERSION "1"
+#define HC_NOT_SUPPORTED 2
 
 /* Set a default date-time format for git log ("log.date" config variable) */
 static const char *default_date_mode = NULL;
@@ -902,6 +905,7 @@ static int auto_number = 1;
 
 static char *default_attach = NULL;
 
+static const char *header_cmd = NULL;
 static struct string_list extra_hdr = STRING_LIST_INIT_NODUP;
 static struct string_list extra_to = STRING_LIST_INIT_NODUP;
 static struct string_list extra_cc = STRING_LIST_INIT_NODUP;
@@ -1100,6 +1104,8 @@ static int git_format_config(const char *var, const char *value,
 		format_no_prefix = 1;
 		return 0;
 	}
+	if (!strcmp(var, "format.headercmd"))
+		return git_config_string(&header_cmd, var, value);
 
 	/*
 	 * ignore some porcelain config which would otherwise be parsed by
@@ -1419,6 +1425,7 @@ static void make_cover_letter(struct rev_info *rev, int use_separate_file,
 		show_range_diff(rev->rdiff1, rev->rdiff2, &range_diff_opts);
 		strvec_clear(&other_arg);
 	}
+	free(pp.after_subject);
 }
 
 static char *clean_message_id(const char *msg_id)
@@ -1869,6 +1876,35 @@ static void infer_range_diff_ranges(struct strbuf *r1,
 	}
 }
 
+/* Returns an owned pointer */
+static char *header_cmd_output(struct rev_info *rev, const struct commit *cmit)
+{
+	struct child_process header_cmd_proc = CHILD_PROCESS_INIT;
+	struct strbuf output = STRBUF_INIT;
+	int res;
+
+	strvec_pushl(&header_cmd_proc.args, header_cmd, NULL);
+	if (cmit)
+		strvec_pushf(&header_cmd_proc.env, "GIT_FP_HEADER_CMD_HASH=%s",
+			     oid_to_hex(&cmit->object.oid));
+	strvec_pushl(&header_cmd_proc.env,
+		     "GIT_FP_HEADER_CMD_VERSION=" HC_VERSION, NULL);
+	strvec_pushf(&header_cmd_proc.env, "GIT_FP_HEADER_CMD_COUNT=%" PRIuMAX,
+		     (uintmax_t)rev->nr);
+	res = capture_command(&header_cmd_proc, &output, 0);
+	if (res) {
+		if (res == HC_NOT_SUPPORTED)
+			die(_("header-cmd %s: returned exit "
+			      "code %d; the command does not support "
+			      "version " HC_VERSION),
+			    header_cmd, HC_NOT_SUPPORTED);
+		else
+			die(_("header-cmd %s: failed with exit code %d"),
+			    header_cmd, res);
+	}
+	return strbuf_detach(&output, NULL);
+}
+
 int cmd_format_patch(int argc, const char **argv, const char *prefix)
 {
 	struct commit *commit;
@@ -1959,6 +1995,7 @@ int cmd_format_patch(int argc, const char **argv, const char *prefix)
 		OPT_GROUP(N_("Messaging")),
 		OPT_CALLBACK(0, "add-header", NULL, N_("header"),
 			    N_("add email header"), header_callback),
+		OPT_STRING(0, "header-cmd", &header_cmd, N_("email"), N_("command that will be run to generate headers")),
 		OPT_STRING_LIST(0, "to", &extra_to, N_("email"), N_("add To: header")),
 		OPT_STRING_LIST(0, "cc", &extra_cc, N_("email"), N_("add Cc: header")),
 		OPT_CALLBACK_F(0, "from", &from, N_("ident"),
@@ -2325,6 +2362,8 @@ int cmd_format_patch(int argc, const char **argv, const char *prefix)
 	if (cover_letter) {
 		if (thread)
 			gen_message_id(&rev, "cover");
+		if (header_cmd)
+			rev.pe_headers = header_cmd_output(&rev, NULL);
 		make_cover_letter(&rev, !!output_directory,
 				  origin, nr, list, description_file, branch_name, quiet);
 		print_bases(&bases, rev.diffopt.file);
@@ -2334,6 +2373,7 @@ int cmd_format_patch(int argc, const char **argv, const char *prefix)
 		/* interdiff/range-diff in cover-letter; omit from patches */
 		rev.idiff_oid1 = NULL;
 		rev.rdiff1 = NULL;
+		free(rev.pe_headers);
 	}
 	rev.add_signoff = do_signoff;
 
@@ -2380,6 +2420,8 @@ int cmd_format_patch(int argc, const char **argv, const char *prefix)
 			gen_message_id(&rev, oid_to_hex(&commit->object.oid));
 		}
 
+		if (header_cmd)
+			rev.pe_headers = header_cmd_output(&rev, commit);
 		if (output_directory &&
 		    open_next_file(rev.numbered_files ? NULL : commit, NULL, &rev, quiet))
 			die(_("failed to create output files"));
@@ -2406,6 +2448,7 @@ int cmd_format_patch(int argc, const char **argv, const char *prefix)
 		}
 		if (output_directory)
 			fclose(rev.diffopt.file);
+		free(rev.pe_headers);
 	}
 	stop_progress(&progress);
 	free(list);
