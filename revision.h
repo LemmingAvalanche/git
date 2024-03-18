@@ -290,7 +290,9 @@ struct rev_info {
 	struct ident_split from_ident;
 	struct string_list *ref_message_ids;
 	int		add_signoff;
-	const char	*extra_headers;
+	char		*extra_headers;
+	/* per-email headers */
+	char		*pe_headers;
 	const char	*log_reencode;
 	const char	*subject_prefix;
 	int		patch_name_max;
