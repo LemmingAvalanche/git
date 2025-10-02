@@ -34,7 +34,7 @@ OPTIONS
 	Calculate the patch ID of the input as it is given, do not strip
 	any whitespace.
 +
-This is the default if patchid.verbatim is true.
+This is the default if `patchid.verbatim` is true.
 
 `--stable`::
 	Use a "stable" sum of hashes as the patch ID. With this option:
@@ -56,7 +56,7 @@ This is the default if patchid.verbatim is true.
 - All whitespace within the patch is ignored and does not affect the ID.
 --
 +
-This is the default if patchid.stable is set to true.
+This is the default if `patchid.stable` is set to true.
 
 `--unstable`::
 	Use an "unstable" hash as the patch ID. With this option,
