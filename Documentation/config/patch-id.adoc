@@ -1,0 +1,6 @@
+`patchid.stable`::
+	Normalize the diff in linkgit:git-patch-id[1]: the order of file
+	diffs does not matter and whitespace is ignored. See
+	linkgit:git-patch-id[1] for details.
+`patchid.verbatim`::
+	Do not ignore whitespace. Implies `patchid.stable`.
