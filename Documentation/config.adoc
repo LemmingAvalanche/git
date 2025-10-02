@@ -488,6 +488,8 @@ include::config/pack.adoc[]
 
 include::config/pager.adoc[]
 
+include::config/patch-id.adoc[]
+
 include::config/pretty.adoc[]
 
 include::config/promisor.adoc[]
