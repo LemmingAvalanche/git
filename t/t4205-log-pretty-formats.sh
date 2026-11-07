@@ -118,6 +118,21 @@ test_expect_success 'alias loop' '
 	test_must_fail git log --pretty=test-foo
 '
 
+test_expect_success 'log --format=%s --patch blank line between commit and diff' '
+	git log --format=%s -1 >expect &&
+	echo >>expect &&
+	git diff HEAD^ HEAD >>expect &&
+	git log --format=%s --patch -1 >actual &&
+	test_cmp expect actual
+'
+
+test_expect_success 'log --pretty=format:%s --patch no blank line between commit and diff' '
+	git log --format=%s -1 >expect &&
+	git diff HEAD^ HEAD >>expect &&
+	git log --pretty=format:%s --patch -1 >actual &&
+	test_cmp expect actual
+'
+
 test_expect_success 'NUL separation' '
 	printf "add bar\0$(commit_msg)" >expected &&
 	git log -z --pretty="format:%s" >actual &&
