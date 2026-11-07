@@ -138,6 +138,22 @@ test_expect_success 'NUL separation with --stat' '
 	test_cmp expected actual
 '
 
+test_expect_success 'NUL separation with --patch' '
+	diff0_part=$(git diff HEAD^ HEAD) &&
+	diff1_part=$(git diff-tree --no-commit-id --patch --root HEAD^) &&
+	printf "add bar\n${diff0_part}\n\0$(commit_msg)\n${diff1_part}\n" >expected &&
+	git log -z --patch --pretty="format:%s" >actual &&
+	test_cmp_bin expected actual
+'
+
+test_expect_success 'NUL separation with --format=medium --patch' '
+	git show HEAD >expected &&
+	printf "\0" >>expected &&
+	git show HEAD^ >>expected &&
+	git log -z --patch >actual &&
+	test_cmp_bin expected actual
+'
+
 test_expect_failure 'NUL termination with --stat' '
 	stat0_part=$(git diff --stat HEAD^ HEAD) &&
 	stat1_part=$(git diff-tree --no-commit-id --stat --root HEAD^) &&
