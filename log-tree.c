@@ -764,7 +764,15 @@ void show_log(struct rev_info *opt)
 			putc('\n', opt->diffopt.file);
 			graph_show_remainder(opt->graph);
 		}
-		putc(opt->diffopt.line_termination, opt->diffopt.file);
+		/*
+		 * NUL termination means that we postpone the terminator. But we do
+		 * want a newline between the commit ID and the diff.
+		 */
+		if (opt->diffopt.line_termination == '\0' &&
+		    (opt->diffopt.output_format & ~DIFF_FORMAT_NO_OUTPUT))
+			putc('\n', opt->diffopt.file);
+		else
+			putc(opt->diffopt.line_termination, opt->diffopt.file);
 		return;
 	}
 
@@ -916,7 +924,12 @@ void show_log(struct rev_info *opt)
 	if (opt->use_terminator && !commit_format_is_empty(opt->commit_format)) {
 		if (!opt->missing_newline)
 			graph_show_padding(opt->graph);
-		putc(opt->diffopt.line_termination, opt->diffopt.file);
+		/*
+		 * Termination is postponed for NUL in case there is
+		 * diff output after the log message.
+		 */
+		if (opt->diffopt.line_termination != '\0')
+			putc(opt->diffopt.line_termination, opt->diffopt.file);
 	}
 
 	strbuf_release(&msgbuf);
@@ -971,6 +984,12 @@ int log_tree_diff_flush(struct rev_info *opt)
 	}
 	diff_flush(&opt->diffopt);
 	return 1;
+}
+
+void log_tree_nul_terminate(struct rev_info *opt) {
+	if (opt->use_terminator &&
+	    opt->diffopt.line_termination == '\0')
+		putc(opt->diffopt.line_termination, opt->diffopt.file);
 }
 
 static int do_diff_combined(struct rev_info *opt, struct commit *commit)
@@ -1311,6 +1330,8 @@ int log_tree_commit(struct rev_info *opt, struct commit *commit)
 				pathspec_single_path(&opt->diffopt.pathspec));
 		}
 	}
+
+	log_tree_nul_terminate(opt);
 
 	opt->loginfo = NULL;
 	maybe_flush_or_die(opt->diffopt.file, "stdout");
