@@ -396,6 +396,18 @@ This mode is only compatible with the `--objects`, `--boundary`, and
 `--missing` output options.
 endif::git-rev-list[]
 
+`-Z`::
+	Use NUL terminator to delimit records. The _record_ is the
+	commit and whatever extra information about it, like for example
+	`--patch` or `--stat`.
++
+Note that separator/terminator behavior is usually set when using
+`--pretty` or `--format`. These have no effect when this option is
+given.
++
+This implies `-z`, so diff output formats like `--raw` and `--numstat`
+will also contain _NUL_ internally.
+
 History Simplification
 ~~~~~~~~~~~~~~~~~~~~~~
 

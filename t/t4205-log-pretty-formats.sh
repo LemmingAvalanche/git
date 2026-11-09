@@ -169,6 +169,33 @@ test_expect_success 'NUL separation with --format=medium --patch' '
 	test_cmp_bin expected actual
 '
 
+test_expect_success 'NUL with -Z and --format=medium --patch' '
+	git show HEAD >expected &&
+	printf "\0" >>expected &&
+	git show HEAD^ >>expected &&
+	printf "\0" >>expected &&
+	git log -Z --patch >actual &&
+	test_cmp_bin expected actual
+'
+
+test_expect_success 'NUL and terminator behavior with -Z' '
+	git show HEAD >expected &&
+	printf "\0" >>expected &&
+	git show HEAD^ >>expected &&
+	printf "\0" >>expected &&
+	git log -Z --patch >actual &&
+	test_cmp_bin expected actual
+'
+
+test_expect_success '-Z --format=medium still uses terminator' '
+	git show HEAD >expected &&
+	printf "\0" >>expected &&
+	git show HEAD^ >>expected &&
+	printf "\0" >>expected &&
+	git log -Z --format=medium --patch >actual &&
+	test_cmp_bin expected actual
+'
+
 test_expect_success 'NUL termination with --stat' '
 	stat0_part=$(git diff --stat HEAD^ HEAD) &&
 	stat1_part=$(git diff-tree --no-commit-id --stat --root HEAD^) &&

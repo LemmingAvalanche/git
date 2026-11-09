@@ -54,7 +54,7 @@ static void save_user_format(struct rev_info *rev, const char *cp, int is_tforma
 {
 	free(user_format);
 	user_format = xstrdup(cp);
-	if (is_tformat)
+	if (!rev->user_defined_delimiter && is_tformat)
 		rev->use_terminator = 1;
 	rev->commit_format = CMIT_FMT_USERFORMAT;
 }
@@ -191,7 +191,8 @@ void get_commit_format(const char *arg, struct rev_info *rev)
 {
 	struct cmt_fmt_map *commit_format;
 
-	rev->use_terminator = 0;
+	if (!rev->user_defined_delimiter)
+		rev->use_terminator = 0;
 	if (!arg) {
 		rev->commit_format = CMIT_FMT_DEFAULT;
 		return;
@@ -211,7 +212,8 @@ void get_commit_format(const char *arg, struct rev_info *rev)
 		die("invalid --pretty format: %s", arg);
 
 	rev->commit_format = commit_format->format;
-	rev->use_terminator = commit_format->is_tformat;
+	if (!rev->user_defined_delimiter)
+		rev->use_terminator = commit_format->is_tformat;
 	rev->expand_tabs_in_log_default = commit_format->expand_tabs_in_log;
 	if (!rev->date_mode_explicit && commit_format->default_date_mode_type)
 		rev->date_mode.type = commit_format->default_date_mode_type;
