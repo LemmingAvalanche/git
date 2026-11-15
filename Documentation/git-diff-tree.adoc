@@ -20,6 +20,9 @@ Compare the content and mode of blobs found via two tree objects.
 If there is only one <tree-ish> given, the commit is compared with its parents
 (see --stdin below).
 
+This command outputs a line with the commit ID when applicable. Use
+`--no-commit-id` to suppress this behavior.
+
 Note that 'git diff-tree' can use the tree encapsulated in a commit object.
 
 OPTIONS
