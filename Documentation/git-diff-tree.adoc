@@ -25,6 +25,8 @@ This command outputs a line with the commit ID when applicable. Use
 
 Note that 'git diff-tree' can use the tree encapsulated in a commit object.
 
+See the "EXAMPLES" section at the end for a few examples.
+
 OPTIONS
 -------
 include::diff-options.adoc[]
@@ -128,6 +130,44 @@ include::pretty-options.adoc[]
 include::pretty-formats.adoc[]
 
 include::diff-format.adoc[]
+
+EXAMPLES
+--------
+
+The default behavior is to show the commit ID and then the raw diff (see
+`--raw`):
+
+----
+$ git diff-tree HEAD
+00645eb9f4e515533cdf67376d481ffb4a796bcc
+:040000 040000 ac1844364599b5671e9e4da68eab0817cab2ac2d b39de8e87a84787fb7bc2b38e015540e6d336eae M	Documentation
+----
+
+But you can use this command to show normal diffs (`--patch`) and commit
+messages as well. You can for example get the same output as `git log`
+with:
+
+----
+$ git rev-list HEAD |
+git diff-tree --no-patch --stdin --always --format=medium
+----
+
+The above is of course longer to type and uses two processes instead
+of two. But this longer form with `--stdin` is more flexible than `git
+log --stdin`. That is because the linkgit:git-log[1] form only outputs
+anything after you close standard in (stdin). Meanwhile, `git diff-tree
+--stdin ...` outputs each commit or diff (or both) immediately. This
+means that you can use `-z --use-terminator` to feed the commit, handle
+the output, and then continue with the next commit. The above can be
+tweaked to for example show the diff as well with `--patch`.
+
+----
+$ git diff-tree --no-patch --stdin --always -z --use-terminator \
+     [rev-list options]
+----
+
+The command `git diff-tree --stdin --patch` can be used together with
+linkgit:patch-id[1] to create a map from commit IDs to pach IDs.
 
 GIT
 ---
