@@ -61,6 +61,9 @@ git rev-list --format=medium HEAD
 git rev-list HEAD |
 git diff-tree --stdin --format=medium -p
 ----------
++
+This will not print commits without diffs, like merge commits. Use
+`--always` to also print those commits.
 
 * Print the list of commits on the current branch that touched any
   file in the `Documentation` directory.
