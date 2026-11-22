@@ -31,7 +31,7 @@ commit_msg () {
 	fi
 }
 
-test_expect_success 'set up basic repos' '
+test_expect_success 'setup basic repos' '
 	>foo &&
 	>bar &&
 	git add foo &&
