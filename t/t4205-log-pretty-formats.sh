@@ -215,6 +215,63 @@ test_expect_success 'NUL termination with --reflog --pretty=oneline' '
 	test_cmp expect actual
 '
 
+test_expect_success 'setup merge' '
+	original=$(git branch --show-current) &&
+	git checkout -b merge-branch &&
+	git checkout -b f &&
+	echo on-a-branch >feature.txt &&
+	git add feature.txt &&
+	test_commit --no-tag on-another-branch feature.txt &&
+	git checkout merge-branch &&
+	git merge --no-ff f &&
+	test_merge merge-commit --no-ff f &&
+	git checkout -b f1 &&
+	echo on-f1 >f1.txt &&
+	git add f1.txt &&
+	test_commit --no-tag f1 f1.txt &&
+	git checkout merge-branch &&
+	git checkout -b f2 &&
+	echo on-f2 >f2.txt &&
+	git add f2.txt &&
+	test_commit --no-tag f2 f2.txt &&
+	git checkout merge-branch &&
+	test_merge octopus-merge --no-ff f1 f2 &&
+	git branch -D f f1 f2 &&
+	git checkout "$original"
+'
+
+test_expect_success 'log --diff-merges' '
+	git log -1 merge-commit >expect &&
+	echo >>expect &&
+	git diff merge-commit^1 merge-commit >>expect &&
+	git log -1 --diff-merges=first-parent \
+		merge-commit >actual &&
+	test_cmp expect actual
+'
+
+test_expect_success 'log --diff-merges NUL terminated' '
+	git log -1 --format=%s merge-commit >expect &&
+	git diff merge-commit^1 merge-commit >>expect &&
+	printf "\0" >>expect &&
+	git log -1 -z --format=%s --diff-merges=first-parent \
+		merge-commit >actual &&
+	test_cmp expect actual
+'
+
+test_expect_success 'log --remerge-diff octopus merge' '
+	git log -1 octopus-merge >expect &&
+	echo "diff: warning: Skipping remerge-diff for octopus merges." \
+		>>expect &&
+	git log -1 --remerge-diff octopus-merge >actual &&
+	test_cmp expect actual
+'
+
+# Later tests depend on what tags you have
+test_expect_success 'setup: clean up --diff-merges' '
+	git tag -d merge-commit &&
+	git tag -d octopus-merge
+'
+
 test_expect_success 'setup more commits' '
 	test_commit "message one" one one message-one &&
 	test_commit "message two" two two message-two &&
