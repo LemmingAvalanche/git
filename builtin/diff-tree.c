@@ -11,6 +11,7 @@
 #include "revision.h"
 #include "tmp-objdir.h"
 #include "tree.h"
+#include "write-or-die.h"
 
 static struct rev_info log_tree_opt;
 
@@ -59,6 +60,9 @@ static int stdin_diff_trees(struct tree *tree1, const char *p)
 	diff_tree_oid(&tree1->object.oid, &tree2->object.oid,
 		      "", &log_tree_opt.diffopt);
 	log_tree_diff_flush(&log_tree_opt);
+	log_tree_nul_terminate(&log_tree_opt);
+	maybe_flush_or_die(log_tree_opt.diffopt.file, "stdout");
+
 	return 0;
 }
 
