@@ -768,19 +768,19 @@ void show_log(struct rev_info *opt)
 		 * NUL termination means that we postpone the terminator. But we do
 		 * want a newline between the commit ID and the diff.
 		 */
-		if (opt->diffopt.line_termination == '\0' &&
+		if (opt->delimiter == '\0' &&
 		    (opt->diffopt.output_format & ~DIFF_FORMAT_NO_OUTPUT))
 			putc('\n', opt->diffopt.file);
 		else
-			putc(opt->diffopt.line_termination, opt->diffopt.file);
+			putc(opt->delimiter, opt->diffopt.file);
 		return;
 	}
 
 	/*
 	 * If use_terminator is set, we already handled any record termination
 	 * at the end of the last record.
-	 * Otherwise, add a diffopt.line_termination character before all
-	 * entries but the first.  (IOW, as a separator between entries)
+	 * Otherwise, add a ''delimiter' character before all entries
+	 * but the first.  (IOW, as a separator between entries)
 	 */
 	if (opt->shown_one && !opt->use_terminator) {
 		/*
@@ -795,10 +795,10 @@ void show_log(struct rev_info *opt)
 		 * never want the extra graph output before the entry
 		 * separator.
 		 */
-		if (opt->diffopt.line_termination == '\n' &&
+		if (opt->delimiter == '\n' &&
 		    !opt->missing_newline)
 			graph_show_padding(opt->graph);
-		putc(opt->diffopt.line_termination, opt->diffopt.file);
+		putc(opt->delimiter, opt->diffopt.file);
 	}
 	opt->shown_one = 1;
 
@@ -928,8 +928,8 @@ void show_log(struct rev_info *opt)
 		 * Termination is postponed for NUL in case there is
 		 * diff output after the log message.
 		 */
-		if (opt->diffopt.line_termination != '\0')
-			putc(opt->diffopt.line_termination, opt->diffopt.file);
+		if (opt->delimiter != '\0')
+			putc(opt->delimiter, opt->diffopt.file);
 	}
 
 	strbuf_release(&msgbuf);
@@ -988,8 +988,8 @@ int log_tree_diff_flush(struct rev_info *opt)
 
 void log_tree_nul_terminate(struct rev_info *opt) {
 	if (opt->use_terminator &&
-	    opt->diffopt.line_termination == '\0')
-		putc(opt->diffopt.line_termination, opt->diffopt.file);
+	    opt->delimiter == '\0')
+		putc(opt->delimiter, opt->diffopt.file);
 }
 
 static int do_diff_combined(struct rev_info *opt, struct commit *commit)

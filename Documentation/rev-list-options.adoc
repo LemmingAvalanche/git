@@ -405,8 +405,8 @@ Note that separator/terminator behavior is usually set when using
 `--pretty` or `--format`. These have no effect when this option is
 given.
 +
-This implies `-z`, so diff output formats like `--raw` and `--numstat`
-will also contain _NUL_ internally.
+This does not imply `-z`, but `-z` can be passed as well in order to use
+_NUL_ internally for diff formats like `--raw` and `--numstat`.
 
 History Simplification
 ~~~~~~~~~~~~~~~~~~~~~~

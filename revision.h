@@ -284,6 +284,7 @@ struct rev_info {
 			force_in_body_from:1,
 			encode_email_headers:1,
 			include_header:1;
+	char		delimiter;
 	unsigned int	disable_stdin:1;
 	/* --show-linear-break */
 	unsigned int	track_linear:1,
@@ -444,6 +445,7 @@ struct rev_info {
 	.max_parents = -1, \
 	.expand_tabs_in_log = -1, \
 	.commit_format = CMIT_FMT_DEFAULT, \
+	.delimiter = '\n', \
 	.expand_tabs_in_log_default = 8, \
 	.rdiff_log_arg = STRVEC_INIT, \
 	.argv_to_free = STRVEC_INIT, \

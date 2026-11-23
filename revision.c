@@ -2755,10 +2755,13 @@ static int handle_revision_opt(struct rev_info *revs, int argc, const char **arg
 		if (revs->repo->fetch_if_missing)
 			BUG("exclude_promisor_objects can only be used when fetch_if_missing is 0");
 		revs->exclude_promisor_objects = 1;
+	} else if (!strcmp(arg, "-z")) {
+		revs->delimiter = '\0';
+		revs->diffopt.line_termination = '\0';
 	} else if (!strcmp(arg, "-Z")) {
 		revs->user_defined_delimiter = 1;
 		revs->use_terminator = 1;
-		revs->diffopt.line_termination = '\0';
+		revs->delimiter = '\0';
 	} else {
 		int opts = diff_opt_parse(&revs->diffopt, argv, argc, revs->prefix);
 		if (!opts)
